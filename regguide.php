@@ -1,0 +1,194 @@
+<?php
+if(isset($_POST['register'])){
+	
+	
+$name=$_POST['name'];
+$email=$_POST['email'];
+	$password=$_POST['password'];
+	$repassword=$_POST['repassword'];
+$place=$_POST['place'];
+$qualification=$_['qualification'];
+$phone=$_POST['phone'];
+$photo=$_POST['photo'];
+
+    // This is the final location of Images. 
+    $target_dir = "uploads/";
+    // basename function returns the name of the file. It removes all other components and returns only filename
+    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
+
+
+    $uploadOk = 1;
+    //Getting file extension
+    $imageFileType = pathinfo($target_file,PATHINFO_EXTENSION);
+    // Check if image file is a actual image or fake image
+
+    $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
+    if($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+    } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+    }
+
+    // Check if file already exists
+    if (file_exists($target_file)) {
+        echo "Sorry, file already exists.";
+        $uploadOk = 0;
+    }
+
+    // Check file size
+    if ($_FILES["fileToUpload"]["size"] > 500000) {
+        echo "Sorry, your file is too large.";
+        $uploadOk = 0;
+    }
+    // Check for File formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+        echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+        $uploadOk = 0;
+    }
+
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+        echo "Sorry, your file was not uploaded.";
+
+    // if everything is ok, try to upload file
+    } else {
+
+        // Copying from temporary location to required destination
+        if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+            echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+        } else {
+            echo "Sorry, there was an error uploading your file.";
+        }
+    }
+}
+
+	//do the sanity check
+	$valid=true;
+if($name="") {
+	echo "invalid";
+	$valid=false;
+}
+if($phone="") {
+	echo "invalid";
+	$valid=false;
+}
+if($place="") {
+	echo "invalid";
+	$valid=false;
+}
+if($qualification="") {
+	echo "invalid";
+	$valid=false;
+
+if($email="") {
+	echo "invalid";
+	$valid=false;
+}
+
+if($password="") {
+	echo "invalid";
+	$valid=false;
+}
+
+if($repassword="") {
+	echo "invalid";
+	$valid=false;
+} 
+if($password==$repassword){
+echo "success";
+} 
+//if($valid) {
+	//connect to database
+	
+		$conn = new mysqli("127.0.0.1", "root", "", "project");
+	//insert the values 
+		$sql_query = "INSERT INTO regguide(id,name,photo,phone,qualification,email,password) VALUES('null','$name','$photo',$qualification','$email','$password');";
+
+echo "## $sql_query ##";
+
+		
+		$result = $conn -> query($sql_query);
+		if ($result) {
+			echo "Insert into DB Success";
+		} else {
+			echo "Insert into DB Failed";
+		}
+		// Close the Connection
+
+		$conn -> close();
+
+
+	}require_once("./views/templates/header.php");
+require_once("./header.php");
+?>
+<div class="col-md-12">
+	<form method="post enctype="multipart/form-data">
+		<div class="form-group">
+			<label for="name">
+				Name	
+			</label>
+			<input type="text" name="name" id="txtName" class="form-control">
+		</div>
+			<div class="form-group">
+			<label for="photo">
+				Photo	
+			</label>
+		<input type="file" name="photo" id="filetoupload"/>
+		</div>
+		
+		<div class="form-group">
+			<label for="phone">
+				phone	
+			</label>
+			<input type="text" name="phone" id="txtphone" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="place">
+				Place	</br>
+			</label>
+			<input type="text" name="place" id="txtplc" class="form-control">
+		</div>
+		
+		<div class="form-group">
+			<label for="qualification">
+				Qualification
+			</label>
+			<textarea name="qualification" id="txtqua"rows="10" cols="40"  class="form-control"></textarea>
+			
+		</div>
+<div class="form-group"> 
+			<label for="email">
+				Email
+			</label>
+			<input type="text" name="email" id="txtEmail" class="form-control">
+		</div>
+
+		<div class="form-group">
+				<div class="form-group">
+			<label for="password">
+				Password
+			</label>
+			<input type="password" name="password" id="pswdPassword" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="repassword">
+				Re-Enter Password
+		</label>
+			<input type="password" name="repassword" id="pswdRepassword" class="form-control">
+		</div>
+		<div class="form-group">
+			<input type="submit" name="register" value="Register" class="form-control btn btn-primary">
+		</div>
+	</form>
+</div>
+<?php
+require_once("./views/templates/footer.php");
+require_once("./footer2.php");
+
+
+?>
+
+
